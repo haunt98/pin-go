@@ -13,18 +13,18 @@ const (
 	stmtInitPin = `
 CREATE TABLE IF NOT EXISTS pin
 (
-    pin    TEXT PRIMARY KEY,
-    sha256 TEXT
+    pin        TEXT PRIMARY KEY,
+    sha256_hex TEXT
 )
 `
 	stmtSelectPinBySHA256 = `
-SELECT pin, sha256
+SELECT pin, sha256_hex
 FROM pin
-WHERE sha256 = ?;
+WHERE sha256_hex = ?
 `
 	stmtInsertPin = `
-INSERT INTO pin (pin, sha256)
-VALUES (?, ?);
+INSERT INTO pin (pin, sha256_hex)
+VALUES (?, ?)
 `
 )
 
@@ -70,7 +70,7 @@ func (r *repo) SelectPinBySHA256(ctx context.Context, sha256 string) (Pin, error
 	row := r.preparedStmts[preparedSelectPinBySHA256].QueryRowContext(ctx, sha256)
 	if err := row.Scan(
 		&pin.Pin,
-		&pin.SHA256,
+		&pin.SHA256Hex,
 	); err != nil {
 		return Pin{}, fmt.Errorf("database failed to scan: %w", err)
 	}
@@ -81,7 +81,7 @@ func (r *repo) SelectPinBySHA256(ctx context.Context, sha256 string) (Pin, error
 func (r *repo) InsertPin(ctx context.Context, pin Pin) error {
 	if _, err := r.preparedStmts[preparedInsertPin].ExecContext(ctx,
 		pin.Pin,
-		pin.SHA256,
+		pin.SHA256Hex,
 	); err != nil {
 		return fmt.Errorf("database failed to exec: %w", err)
 	}
