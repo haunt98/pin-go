@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"strings"
 
 	"github.com/spf13/cast"
 )
@@ -28,6 +29,8 @@ func NewService(repo Repository) Service {
 }
 
 func (s *service) GetPinBySHA256(ctx context.Context, sha256 string) (Pin, error) {
+	sha256 = strings.ToLower(sha256)
+
 	pin, err := s.repo.SelectPinBySHA256(ctx, sha256)
 	if err != nil {
 		return Pin{}, fmt.Errorf("failed to select pin by sha256: %w", err)
@@ -46,7 +49,7 @@ func (s *service) AddPin(ctx context.Context, pin Pin) error {
 	if _, err := hashSHA256.Write([]byte(pin.Pin)); err != nil {
 		return fmt.Errorf("failed to write hash sha256: %w", err)
 	}
-	pin.SHA256Hex = hex.EncodeToString(hashSHA256.Sum(nil))
+	pin.SHA256Hex = strings.ToLower(hex.EncodeToString(hashSHA256.Sum(nil)))
 
 	if err := s.repo.InsertPin(ctx, pin); err != nil {
 		return fmt.Errorf("failed to insert pin: %w", err)

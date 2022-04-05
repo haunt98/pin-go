@@ -15,9 +15,11 @@ const (
 	Name  = "pin-go"
 	usage = "let the fun begin"
 
-	commandInit = "init"
+	commandInit   = "init"
+	commandSearch = "search"
 
-	usageInit = "init pin, should be run only once"
+	usageInit   = "init pin, should be run only once"
+	usageSearch = "search pin"
 )
 
 type App struct {
@@ -46,6 +48,11 @@ func NewApp(db *sql.DB) (*App, error) {
 				Name:   commandInit,
 				Usage:  usageInit,
 				Action: a.RunInit,
+			},
+			{
+				Name:   commandSearch,
+				Usage:  usageSearch,
+				Action: a.RunSearch,
 			},
 		},
 	}

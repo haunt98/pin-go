@@ -1,9 +1,15 @@
 package pin
 
-import "context"
+import (
+	"context"
+	"fmt"
+
+	"github.com/make-go-great/ioe-go"
+)
 
 type Handler interface {
 	Init(ctx context.Context) error
+	SearchPin(ctx context.Context) error
 }
 
 type handler struct {
@@ -23,5 +29,18 @@ func (h *handler) Init(ctx context.Context) error {
 		}
 	}
 
+	return nil
+}
+
+func (h *handler) SearchPin(ctx context.Context) error {
+	fmt.Printf("Input sha256: ")
+	sha256 := ioe.ReadInput()
+
+	pin, err := h.service.GetPinBySHA256(ctx, sha256)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Pin: %s\n", pin.Pin)
 	return nil
 }

@@ -16,3 +16,7 @@ func (a *action) RunHelp(c *cli.Context) error {
 func (a *action) RunInit(c *cli.Context) error {
 	return a.handler.Init(c.Context)
 }
+
+func (a *action) RunSearch(c *cli.Context) error {
+	return a.handler.SearchPin(c.Context)
+}
