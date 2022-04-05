@@ -12,3 +12,4 @@
 
 # Database
 *.sql
+*.sqlite3
