@@ -5,6 +5,7 @@ import (
 	"log"
 	"path/filepath"
 
+	"github.com/haunt98/pin-go/internal/cli"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -17,12 +18,12 @@ func main() {
 	}
 	defer db.Close()
 
-	// app, err := cli.NewApp(db)
-	// if err != nil {
-	// 	log.Fatalln(err)
-	// }
+	app, err := cli.NewApp(db)
+	if err != nil {
+		log.Fatalln(err)
+	}
 
-	// app.Run()
+	app.Run()
 }
 
 // Should be ./data.sqlite3
