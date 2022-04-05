@@ -14,7 +14,7 @@ import (
 type Service interface {
 	GetPinBySHA256(ctx context.Context, sha256 string) (Pin, error)
 	AddPin(ctx context.Context, pin Pin) error
-	InitPin(ctx context.Context, number int) error
+	InitPin(ctx context.Context, length int) error
 }
 
 type service struct {
@@ -58,18 +58,14 @@ func (s *service) AddPin(ctx context.Context, pin Pin) error {
 // Number 4 -> Pin 0000
 // Number 5 -> Pin 00000
 // Number 6 -> Pin 000000
-func (s *service) InitPin(ctx context.Context, number int) error {
-	for n := int64(0); n < cast.ToInt64(math.Pow10(number)); n++ {
-		// If number == 4
-		// 1 -> "1" -> "0001"
-		str := cast.ToString(n)
-		if len(str) < number {
-			for i := 0; i < number-len(str); i++ {
-				str = "0" + str
-			}
+func (s *service) InitPin(ctx context.Context, length int) error {
+	for number := int64(0); number < cast.ToInt64(math.Pow10(length)); number++ {
+		numberStr := pinToString(number, length)
+		if err := s.AddPin(ctx, Pin{
+			Pin: numberStr,
+		}); err != nil {
+			return err
 		}
-
-		fmt.Println("XXX", str)
 	}
 
 	return nil
